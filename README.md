@@ -1,2 +1,2 @@
-# NTD_AGG
-Neglected Tropical Diseases
+# STI_AGG
+Sexually Transmitted Infections

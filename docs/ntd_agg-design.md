@@ -225,7 +225,7 @@ This dataset contains the main source of information for the analysis of STI pro
 - STI - Confirmatory test positive: Syphilis
 - STI - Syphilis: Received at least one dose of BPG
 - STI - Syphilis: Received at least three doses of BPG
-- STI - Syphilis: congenitalç
+- STI - Syphilis: congenital
 
 ## Analytics
 

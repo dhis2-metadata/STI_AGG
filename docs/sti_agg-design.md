@@ -1,4 +1,4 @@
-# Sexually Transmitted Infections - System Design Guide { #sti-agg-design }
+# Sexually Transmitted Infections (STI) - System Design Guide { #sti-agg-design }
 
 ## Introduction
 

@@ -1,6 +1,6 @@
-# Neglected Tropical Diseases (NTD) Installation Guide { #ntd-agg-installation }
+# Sexually Transmitted Infections (STI) Installation Guide { #sti-agg-installation }
 
-This document includes an installation guide for the Neglected Tropical Diseases package.
+This document includes an installation guide for the Sexually Transmitted Infections package.
 
 System default language: English
 
@@ -10,8 +10,8 @@ The metadata reference and metadata json files provide technical details on pack
 
 The metadata package consists of the following modules:
 
-- Neglected Tropical Diseases
-- Neglected Tropical Diseases (dashboard)
+- Sexually Transmitted Infections
+- Sexually Transmitted Infections (dashboard)
 
 ## Installation
 
@@ -88,6 +88,7 @@ contains the UIDs which could be replaced, as well as the API endpoints to ident
 |-------------------------|---------------|--------------------------------------------------------------------------|
 | Percentage              | `hmSnCXmLYwt` | `../api/indicatorTypes.json?filter=number:eq:false&filter=factor:eq:100` |
 | Numerator only (number) | `CqNPn5KzksS` | `../api/indicatorTypes.json?filter=number:eq:true&filter=factor:eq:1`    |
+| Per 1000 | `zpa0vUC7IWd` | `../api/indicatorTypes.json?filter=number:eq:false&filter=factor:eq:1000`    |
 
 ### Visualizations using Root Organisation Unit UID
 
@@ -169,9 +170,9 @@ Please refer to the [DHIS2 documentation](#sharing) for more information on shar
 
 Three core user groups are included in the packages:
 
-- NTD - Access (view metadata/view data)
-- NTD - Admin (view and edit metadata/no access to data)
-- NTD - Data Capture - (view metadata/capture and view data)
+- STI - Access (view metadata/view data)
+- STI - Admin (view and edit metadata/no access to data)
+- STI - Data Capture - (view metadata/capture and view data)
 
 The users are assigned to the appropriate user group based on their role within the system. Sharing for other objects in
 the package may be adjusted depending on the set-up. Refer to the [DHIS2 Documentation on sharing](#sharing) for more

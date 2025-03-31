@@ -246,8 +246,6 @@ Those indicators are composed by:
 
 ## User group
 
-## User group
-
 Three standard group are included in the downloadable .json
 
 | User group         | Metadata          | Data              |

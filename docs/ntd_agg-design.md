@@ -1,245 +1,258 @@
-# Neglected Tropical Diseases Overarching Module - System Design Guide { #ntd-agg-design }
+# Sexually Transmitted Infections - System Design Guide { #sti-agg-design }
 
-## Background and Purpose
+## Introduction
 
-The **NTD - Neglected Tropical Diseases overarching module** provides an overview of the design principles and guidelines used to develop a comprehensive digital data package for routine reporting on neglected tropical diseases (NTDs) within countries' health management information systems (HMIS). This document is intended for use by DHIS2 implementers at the country and regional levels to facilitate the implementation and localization of the module. The NTD metadata package can be adapted to align with local needs and national guidelines, ensuring that specific local workflows and regulations are considered in the adoption and adaptation of the programs included in this package.
+The DHIS2 STI toolkit is based on the [WHO Framework for monitoring sexually transmitted infections and strengthening surveillance](https://iris.who.int/handle/10665/378238) and also draws on the [Consolidated guidelines on person-centred HIV strategic information: strengthening routine data for impact](https://www.who.int/publications/i/item/9789240055315).
 
-The datasets incorporated in this module are based on WHO recommendations and best practices or established reporting frameworks for NTD surveillance and control [WHO, 2023](https://www.who.int/publications/i/item/9789240062863). These datasets will often need to be adjusted to fit national reporting systems. This adjustment might involve adding important local variables or omitting information that is not captured at the clinical level.
+This toolkit includes:
 
-The NTD Neglected Tropical Diseases overarching module supports global and national efforts in monitoring, controlling, and ultimately eliminating NTDs. By utilising standardised data collection and reporting frameworks, countries can better track their progress against the targets in the WHO's 2021-2030 road map for NTDs. This strategic document aims to reduce the number of people requiring interventions for NTDs by 90% and achieve significant reductions in disease-related morbidity and mortality by 2030​ World Health Organization [WHO, 2021](https://www.who.int/publications/i/item/9789240010352)
+- WHO-recommended dashboard analyses for monitoring STI data using key metrics to adjust programming and drive impact
+- Aggregate dataset and data elements to model aggregated tracker data for performant, anonymized analytics
 
-## System Design Overview
+The DHIS2 STI Toolkit aims to enhance data quality, improve monitoring, and facilitate timely response actions. It is designed to streamline routine data management, strengthen surveillance systems, and enable data-driven health policies.
 
-### Package Structure
+The system design document explains the reference configuration in DHIS2 for the STI use case, including a detailed description of the dashboard, DHIS2 configuration and implementation. This document also does not consider the resources and infrastructure needed to implement such a system, such as servers, power, internet connections, backups, training and user support, which can be found in the [DHIS2 Implementation Guide](https://docs.dhis2.org/en/implement/implementing-dhis2/overview.html).
 
-The NTD toolkit includes different data sets that can be used at any given time based on local needs.
+Reference metadata for this toolkit is available at: [dhis2.org/metadata-downloads](http://dhis2.org/metadata-downloads).
 
-| Dataset                       | Periodicity | Description                                                                                                                                                  |
-|-------------------------------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| NTD - Neglected Tropical Diseases | Monthly     | Overarching module encompassing the full list of 29 NTDs. It contains the core data points for the surveillance at health facility level - cases (suspected, probable, confirmed), rumors, deaths, and treatments. |
-| NTD - Human Resources         | Quarterly   | It contains the information relevant to monitor the staff and their trainings.                                                                               |
-| NTD - Stock                   | Monthly     | Standard LMIS module available for the collection of NTD-related medical items.                                                                             |
+### Acknowledgement
+
+The STI toolkit has been developed in partnership with WHO with support from France Ministry of Europe and Foreign Affairs. We are grateful to WHO for providing subject matter expertise in the design and development of these tools, as well as to the many countries who have shared their implementation experience with us.
+
+## System design overview
+
+### Background
+
+Sexual health and well-being are important determinants of overall health.It is estimated that more than 1 million people 15–49 years old acquire one of four curable STIs each day (Treponemal pallidum (syphilis), Neisseria gonorrhoeae (gonorrhoea), Chlamydia trachomatis (chlamydia) and Trichomonas vaginalis (trichomoniasis). Other important infections that can be transmitted sexually include HIV, human papillomavirus (HPV), herpes simplex, hepatitis B and C, human T-lymphotropic virus type 1 and mpox.
+
+Once infected with an STI, an individual may develop symptoms including vaginal or urethral discharge, pain with urination, genital or anal ulcers and genital warts. Left untreated, and irrespective of whether an individual develops symptoms, STIs can (depending on the infection) lead to long-term irreversible and potentially fatal outcomes including cancer, chronic pelvic pain, ectopic pregnancy, and infertility. Some STIs can also be transmitted from pregnant women to their infants, leading to adverse birth outcomes, including stillbirth, low birthweight, prematurity, neonatal death, or congenital abnormalities. There are also bidirectional interactions between STIs and HIV; people living with HIV may experience enhanced clinical manifestations of STIs, and some STIs facilitate the transmission and acquisition of HIV.
+
+Individuals with an STI may be treated based on the symptoms they present (syndromic treatment) or may be identified by testing at a public, private or nongovernmental clinic. Individuals may also seek care from traditional health practitioners or self-treat with medicines bought from pharmacies, informal drug sellers or over the internet.
+
+Regular collection of STI data from all service delivery and administrative levels is crucial for informing programme and policy decisions. This includes data on clinical cases reporting, infection prevalence and access to services. These data can be used to track the epidemiology of STIs and to monitor and improve prevention interventions. Collecting and interpreting these data can be challenging. STIs are often asymptomatic, and many individuals who are symptomatic seek care from a variety of public or private health-care providers or self-treat. In addition, the lack of low-cost rapid point-of-care diagnostic tests for most STIs means that individuals are often treated for multiple STIs based on their symptoms, not for the specific STI they have.
+
+### Use case
+
+The STI toolkit is designed to support the collection of routine data on STIs. This includes data on STI related syndromes, individuals with laboratory confirmed diagnoses of particular STIs, and indicators related to syphilis testing and treatment among pregnant women attending ANC care. The collection of these data should help inform the provision of STI related services.
 
 ### Intended users
 
-- Health facility users: capture and report key data on malaria activities
-- Program managers: managers at national and sub-national level may be responsible for supporting data entry and analysis.
-- National and local health authorities: to monitor and analyze the surveillance of data through dashboards and analytics tools, to conduct risk assessments and plan response measures; to generate reports for regional and global reporting
+The STI system design focuses on meeting the needs of end users at all levels of the health system, including those responsible for implementing STI programmes in countries. These users may include:
 
-### Data Set - NTD - Neglected Tropical Diseases
+- **STI program managers & staff (national & sub-national)**: data users who are responsible for routine analysis of data, using data to improve operations and programme strategies, and providing data-driven feedback to programme staff, including implementing partners, facilities, and other service delivery points
+- **STI programme data managers**: users who are responsible for overseeing data collection, management, data quality, analysis and reporting functions
+- **System admins/HMIS focal points**: MOH staff and/or core DHIS2 team responsible for maintaining and improving data systems for health programmes, integrating data streams into national platforms, providing technical support for system design, adaptation and end user support; and maintaining the DHIS2 system over time
+- **Implementing partners**: organizations who provide technical assistance to the Ministry of Health, collect and analyze data on behalf of the overall national programme strategy, and may be responsible for the operations of service delivery networks
 
-The NTD overarching module is structured in **29 sections**, one per disease. All sections have a **flat structure**  and are disaggregated by **sex (male and female) and by Global NTD Annual Reporting Form (GNARF) age groups (less than 1y, 1 -4y, 5-14y, 15-24y, 25-49y, 50-64y, 65+ years)**.
+### Design structure
 
-The dataset is designed for the **reporting of diseases at the point of care (health facility level)**.
+The DHIS2 STI configuration is structured in two major components:
 
-The diseases and conditions included in this module are:
+- **Dashboard and Indicators**: the STI dashboard and indicators are all served by the aggregate data model in DHIS2
+- **Aggregate data sets**: aggregate datasets, data elements are configured according to the WHO’s STI analysis framework to populate the core indicators. One dataset is designed to receive aggregated tracker data and model this data in a performant way, leveraging the advantages of the aggregate data model in DHIS2 for analysis. Alternatively, this dataset can also be used for aggregate paper-based reporting; or to store data reported routinely from other individual-level data systems in use, such as sites using EMRs or other mobile applications.
 
-| **Disease**                                         | **Abbreviations throughout the toolkit** |
-|-----------------------------------------------------|-------------------------------------------|
-| Buruli ulcer                                        | BUR                                       |
-| Chagas disease                                      | CHA                                       |
-| Chikungunya                                        | CHI                                       |
-| Chromoblastomycoses                                 | CHR                                       |
-| Sporotrichosis                                      | SPO                                       |
-| Paracoccidioidomycosis                              | PAR                                       |
-| Dengue & severe dengue                              | DEN                                       |
-| Dracunculiasis (Guinea worm disease)               | DRA                                       |
-| Cystic echinococcosis                               | CYS                                       |
-| Foodborne trematodes                                | FOO                                       |
-| Human African Trypanosomiasis (gambiense) - gHAT   | HAG                                       |
-| Human African Trypanosomiasis (rhodesiense) - rHAT | HAR                                       |
-| Leishmaniasis (cutaneous) - CL                     | LEI                                       |
-| Leishmaniasis (mucocutaneous) - ML                 | MCL                                       |
-| Leishmaniasis (visceral) - VL                      | LEV                                       |
-| Leprosy                                             | LEP                                       |
-| Lymphatic filariasis                                | FIL                                       |
-| Mycetoma                                            | MYC                                       |
-| Noma                                                | NOM                                       |
-| Onchocerciasis                                      | ONC                                       |
-| Rabies                                              | RAB                                       |
-| Scabies                                             | SCA                                       |
-| Schistosomiasis                                     | SCH                                       |
-| Snakebite envenoming                                | SNK                                       |
-| Soil-transmitted helminthiasis                     | STH                                       |
-| Taeniasis and cysticercosis                         | TAE                                       |
-| Trachoma                                            | TRA                                       |
-| Tungiasis                                           | TUN                                       |
-| Yaws                                                | YAW                                       |
+These modular components are designed based on the heterogeneous nature of health information data systems in countries and support the typical architecture for implementing case-based data systems alongside integrated national HMIS infrastructure:
 
-This design guide reports the first two sections (Buruli ulcer and Chagas disease) of the module as examples of the structure. The full dataset is available in the [HMIS Demo](https://demos.dhis2.org/hmis).
+![Example of an national hmis ecosystem](resources/images/hmis_ecosystem_STI.png)
 
-#### Buruli ulcer Section
+## Dashboard
 
-The section covers the core surveillance component for the disease based on the **[Global NTD Annual Reporting Form](https://www.who.int/teams/control-of-neglected-tropical-diseases/data-platforms-and-tools)** for the reporting of essential data, progress and activities related to BUR control and elimination efforts within a given country.
+Thematic dashboards for monitoring various aspects of STI programming have been developed based on the core indicators included in the [WHO Framework for monitoring sexually transmitted infections and strengthening surveillance](https://iris.who.int/handle/10665/378238) and the [WHO Consolidated guidelines on person-centred HIV strategic information: strengthening routine data for impact](https://www.who.int/publications/i/item/9789240055315).
 
-![BUR section in the NTD Neglected Tropical DIseases Dataset](resources/images/NTD_BURDEN_001.png)
+Data on STIs and their syndromes provide information on the use of health care services for STIs and the infections and/or syndromes for which people are being treated. They also provide information on the burden of STIs and are markers of unprotected sex or sex without a condom. 
 
-#### Chagas Disease Section
+Two dashboards have been developed for STIs (1) health facility and (2) national and sub-national. Both dashboards are divided into four sections:
 
-![CHA section in the NTD Neglected Tropical DIseases Dataset](resources/images/NTD_BURDEN_002.png)
+- STI syndromes
+- STI diagnostic test confirmed cases of gonorrhoea and chlamydia
+- STI diagnostic test confirmed cases of syphilis
+- EMTCT for syphilis
 
-### Data Set - NTD Human Resources
+> **Note:**
+> Data in the dashboard are disaggregated by gender into three groups:  male, female, and not specified or other. Other includes trans and gender diverse people who choose an identity other than male or female.
 
-The HR dataset is divided into **3 sections**: one to provide the total number of staff hired at the point of care (if assigned at the health facility level) or within a specific zone (if assigned at DIstrict or higher levels); one to count the number of staff who received training in the management of skin-related NTDs, and one to monitor the training received on other non-skin related NTDs.
+### Health facility dashboard
 
-All the sections are **disaggregated into occupational categories** - Nurse, medical assistant, doctor, CHW, and others. Implementers should adapt this disaggregation according to the local needs and available profiles.
+#### STI syndrome
 
-![Hired staff and skin-diseases trainings](resources/images/NTD_BURDEN_003.png)
+![STI syndrome](resources/images/hf_sti_syndrome.png)
 
-![Other NTDs trainings](resources/images/NTD_BURDEN_004.png)
+In many countries case management of STIs is based on the symptoms that an individual presents with. The dashboard is configured to display data for three STI- related syndromes: genital ulcer disease, urethral discharge syndrome, and vaginal discharge syndrome. Please note not all of these cases are related to an STI.
 
-For more information on how to triangulate HR data or how to integrate it into other relevant modules like the Health facility attributes (HFA), please refer to the **Special Considerations chapter** of this guide.
+The first bar chart presents the total number of new cases diagnosed in the last 12 months by syndrome and gender, whilst the second shows the breakdown of new cases by month.
 
-### Population-based Data Elements
+#### STI diagnostic test confirmed cases of Gonorrhoea and Chlamydia
 
-In addition to the data elements (DEs) found in the datasets, there are several DEs that are not part of the NTD dataset, but are grouped under a data element group (DEG) called **"NTD - Population-Based"**.
+![STI diagnostic test confirmed cases of Gonorrhoea and Chlamydia](resources/images/hf_sti_diagnostic_test_confirmed_cases_gonorrhoea_chlamydia.png)
 
-![DEG for district-related data points](resources/images/NTD_BURDEN_005.png)
+Access to diagnostic tests for gonorrhoea and chlamydia is limited, and, in most countries, the number of health facilities for which this section is relevant will be small. 
 
-These DEs are **disease-specific but are not monitored specifically at the health facility** level like those in the NTD Neglected Tropical Diseases Dataset. Instead, they have been isolated for the implementers and MoH/Disease Programme to evaluate their needs, feasibility, and the best way to include them in their reporting flows. This consideration should take into account existing modules and data points at the **district level**, ensuring a comprehensive and integrated approach to NTD surveillance and reporting.
+The first bar chart shows the number of individuals who tested positive in the preceding 12 months for gonorrhoea and chlamydia with a quality assured diagnostic test by gender, and the second the number who tested positive by month. The two tables provide data on the number of tests performed and the number of positive tests by gender.
 
-![Example of DEs present in the District DEG](resources/images/NTD_BURDEN_006.png)
+#### STI diagnostic test confirmed cases of Syphilis
 
-The DEs in this DEG have been grouped in a dataset called **”NTD - Population-based”** and assigned at district level in the Demo instance.
+![STI diagnostic test confirmed cases of Syphilis](resources/images/hf_sti_diagnostic_test_confirmed_cases_syphilis.png)
 
-### Dataset - NTD - Stock
+Diagnostic testing for syphilis is more widely available than for gonorrhoea and chlamydia, reflecting national and global recommendations for testing pregnant women and other populations for syphilis. The data for females are further broken down into pregnant and non-pregnant females.
 
-A Data set for collecting, storing, sharing and analysing essential logistics data is included in the module to allow the management of health and logistics data in a single tool. This Data set is based on a standardised logistics template which is (also) suitable for any other type of healthcare goods used by community health workers, health centres, vaccination centres or hospitals. However, if needed, additional stock data can easily be added to the Data set.
+There are a number of testing algorithms for syphilis involving different combinations of treponemal and non-treponemal tests. In this dashboard testing has been simplified based on the number of tests conducted (first test and confirmatory test).
 
-This dataset is mainly intended for use at the health facility (level). It will, ideally, be integrated with an upstream, national eLMIS (electronic logistics management information system) to provide end-to-end visibility of all logistics data.
-The Data entry form has been designed for storekeepers and health workers in charge of managing facility-level stocks and allows for collecting essential logistics data on mobile devices (tablet computers, mobile phones etc.), notebooks or desktop computers.
-Health facilities are assumed to maintain manual stock records and use DHIS2 for entering their monthly stock data and reports directly into mobile devices or computers and synchronise their reports with the central DHIS2 server.
+The first bar chart shows the number of individuals who tested positive in the preceding 12 months by gender, and the second presents the number of individuals who tested positive by month. The table summarizes the number of syphilis tests performed, the number of confirmatory tests performed, and the number of positive tests.
 
-#### Data Collection
+#### EMTCT for Syphilis
 
-The Data entry form has been intentionally limited to essential logistics data in order to minimise the workload of health workers for their monthly reporting.
-The list of Data Elements (medicines) can easily be modified and adapted to the national essential medicines list and needs and can be separated into different sections, for example, according to the different diseases.
-The tabs for the data fields are arranged in chronological order of the flow of goods:
+![EMTCT for Syphilis](resources/images/hf_emtct_syphilis.png)
 
-- Stock receipt: quantity received from upstream medical stores
-- Stock distribution: quantity issued from the medical store and dispensed to patients or distributed to medical services such as an outpatient department
-- Stock redistribution: quantity distributed to other health facilities, for example to share excess stock
-- Stock return: quantity which was previously issued to a service, patient or other health facility and which was subsequently returned.
-- Stock expired: quantity of medicines which expired in stock and were removed for safe disposal
-- Stock other losses: quantity which is no longer usable for any other reason than expiry, for example, because of damage, cold chain excursions or a manufacturer recall
-- Stock on hand: quantity of stock available on the shelf, ideally determined during a monthly physical stock count
-- Stockout days: number of days during which the medicine was out of stock at some time
+This dashboard documents health facility activities related to the elimination of mother to child transmission of syphilis. Testing pregnant women for syphilis is important for their own health and is the first step in preventing vertical transmission. WHO recommends that all pregnant women should be tested for syphilis at least once, and as early as possible, ideally at the first antenatal care visit. For women who test positive, the recommended treatment depends on the stage of infection (see Box A).
 
-![NTD Stock data entry](resources/images/NTD_BURDEN_007.png)
+The first EMTCT bar chart shows the number of pregnant women attending ANC, the number tested at least once for syphilis, and the estimated testing coverage. The second chart records the number of women who tested positive (first test), the number who received at least one dose of BPG, and the number who received three doses.
 
-## Analytics and Indicators
+> **[WHO Recommendations for treatment of syphilis in pregnant women (updated 2023)](https://www.who.int/publications/i/item/9789240090767)**
+> In pregnant women with early syphilis, WHO recommends:
+> 
+> - benzathine penicillin G 2.4 million units once intramuscularly
+>   
+> If benzathine penicillin is not available, WHO suggests:
+> 
+> - procaine penicillin 1.2 million units intramuscularly once daily for 10 days
+>   
+> In rare situations when benzathine or procaine penicillin cannot be used (e.g. due to confirmed penicillin allergy, which occurs in less than 3% of the population, and where penicillin desensitization is not possible) or are not available (e.g. due to stock-outs), WHO suggests one of the following options with caution and enhanced follow-up:
+> 
+> - ceftriaxone 1 g intramuscularly once daily for 10–14 days; or
+> - erythromycin 500 mg orally four times daily for 14 days.
+>
+> In pregnant women with *late syphilis or an unknown duration of infection*, WHO recommends:
+> 
+> - benzathine penicillin G 2.4 million units intramuscularly once weekly for three consecutive weeks
+> 
+> If benzathine penicillin is not available, WHO suggests:
+> 
+> - procaine penicillin 1.2 million units intramuscularly once daily for 20 days
+> 
+> In rare situations when benzathine or procaine penicillin cannot be used (e.g. due to confirmed penicillin allergy, which occurs in less than 3% of the population, and where penicillin desensitization is not possible) or are not available (e.g. due to stock-outs), WHO suggests using, with caution and enhanced follow-up:
+> 
+> - erythromycin 500 mg orally four times daily for 30 days.
 
-### NTD Overarching Indicators
+### National and sub-national dashboard
 
-The population data should be updated to reflect the local implementation, ensuring accuracy and alignment with specific regional requirements.
-While not included in the current toolkit, it is recommended to develop indicators to track and compare year-over-year changes for the diseases under analysis. This approach was implemented in the [district dashboard for malaria](#mal-agg-design), allowing for trend analysis over time. If needed, the following formula can be used to create this indicator accurately:
+This dashboard can be used either at national and subnational level as the visualisations are set-up to only show the information disaggregated by organisation unit level based on the level of access of the user
 
-Change(%) = (a-b)/a
+#### STI syndrome
 
-previous period of reference(a) and current period of comparison (b)
+![STI syndrome](resources/images/nat_sub_sti_syndrome.png)
 
-- Numerator: DE previous period - actual period
-- (#{UID}.periodOffset(-12)- #{UID})
-- Denominator: DE previous period
-- #{UID}.periodOffset(-12)
+In many countries case management of STIs is based on the symptoms that an individual presents with. The dashboard is configured to display data for three STI-related syndromes: genital ulcer disease, urethral discharge syndrome, and vaginal discharge syndrome. Please note not all of these cases are related to a sexually transmitted infection.
 
-### Stock Analytics
+The first bar chart shows the total number of new cases diagnosed over time by syndrome, and the percentage of health facilities reporting data on STIs. The second records the number of cases by region, and the map presents the number of reported cases per 1000 population. Data on gender disaggregation can be found in the table.
 
-Despite the small number of data fields, a wide range of logistics metrics and indicators can be configured and visualised using various charts - e.g., stock availability and stockout rates, stockout reports, stockout duration, stock coverage time (number of months of stock) and demand variability.
-Examples of visualisations and dashboards which can be built from the stock module stock data set can be found in the LMIS sandbox (credentials on the login page) [MSR - Visualization library - Health facility level](https://lmis.integration.dhis2.org/sandbox-dev/dhis-web-dashboard/#/) Examples of visualisations and dashboards which can be built from the stock module stock data set can be found in the LMIS sandbox (credentials on the login page) [MSR - Visualization library - Health facility level](https://lmis.integration.dhis2.org/sandbox-dev/dhis-web-dashboard/#/) The health and logistics data which is collected and managed in the same DHIS2 instance can easily be combined for calculating triangulated indicators such as comparing the number of a certain medical condition with the quantities of medicines suitable for their treatment.
+#### STI diagnostic test confirmed cases of Gonorrhoea and Chlamydia
 
-## Dashboards
+![STI diagnostic test confirmed cases of Gonorrhoea and Chlamydia](resources/images/nat_sub_sti_diagnostic_test_confirmed_cases_gonorrhoea_chlamydia.png)
 
-Depending on the type of implementation chosen at the local level, the dashboard configuration can vary significantly. There could be disease-specific dashboards (e.g., one for gHAT, one for Chagas disease, etc.), or a single comprehensive dashboard that covers all locally present NTDs. Another option is to integrate the data elements (DEs) into the Integrated Disease Surveillance and Response (IDSR) module, allowing the analytics to be visualized alongside the existing IDSR dashboard(s). This flexibility ensures that the reporting and monitoring systems are tailored to the specific needs and capabilities of the local health infrastructure, optimizing the utility and effectiveness of NTD surveillance and control efforts.
+Access to diagnostic tests for gonorrhoea and chlamydia is limited, and, in most countries, the number of health facilities for which this section is relevant will be limited. 
 
-The [HMIS Demo](https://demos.dhis2.org/hmis) presents one dashboard with four diseases (BUR for skin NTDs, SCH for water-borne NTDs, RAB for zoonotic NTDs, and DEN for vector-borne NTDs) to showcase recommended visualizations for specific diseases. This dashboard serves as an example for implementers, who can decide whether to integrate them into their existing systems or maintain them as separate entities.
+The first bar chart records the number of individuals who tested positive for gonorrhoea and chlamydia over time, and the percentage of health facilities reporting data on gonorrhoea or chlamydia testing. The second shows the number of cases by region. Data on the number of tests performed and the number of positive tests by gender are presented in the two tables.
 
-To further demonstrate an integrated platform for data visualization and analysis, the HMIS Demo incorporates data on human resources (HR) and staff training with the Health Facility Assessment (HFA) module and dashboards. This integration exemplifies how diverse data streams can be unified to enhance monitoring and decision-making processes in health management systems.
+#### STI diagnostic test confirmed cases of Syphilis
 
-## User groups
+![STI diagnostic test confirmed cases of Syphilis](resources/images/sti_diagnostic_test_confirmed_cases_syphilis.png)
 
-As part of the package configuration, user groups have been created to be used to manage sharing settings in the metadata for all the modules. Core metadata that use these sharing settings include mainly the dataSets, dashboard, indicators and data Elements. The three user groups created include:
+Diagnostic testing for syphilis is more widely available than for gonorrhoea and chlamydia, reflecting national and global recommendations for testing pregnant women and other populations for syphilis. The data for females are further broken down further into pregnant and non-pregnant females.
 
-| **User group**       | **Dashboard**        | **Metadata**        | **Data**               |
-|-----------------------|----------------------|----------------------|-------------------------|
-| NTD - Admin          | Can edit and view    | Can edit and view    | Can view only          |
-| NTD - Access         | Can view only        | Can view only        | Can view only          |
-| NTD - Data capture   | No access            | Can view only        | Can capture and view   |
+There are a number of testing algorithms for syphilis involving different combinations of treponemal and non-treponemal tests. In this dashboard testing has been simplified based on the number of tests conducted (first test and confirmatory test). 
 
-## Special Considerations
+The first bar chart shows the number of individuals who tested positive by year, and the percentage of health facilities reporting data on syphilis testing. The second records the number of individuals testing positive by region. The table summarizes the number of tests performed, the number of confirmatory tests performed, and the number positive on each by gender, and subdivides women by pregnancy status.
 
-### Data Triangulation - NTD and CHIS
+#### EMTCT for Syphilis
 
-Triangulating neglected tropical disease (NTD) surveillance data from health facilities and community sources is crucial for comprehensive and effective disease control. This approach **enhances the accuracy and completeness of data**, allowing for better identification of disease patterns, timely detection of outbreaks, and more targeted interventions. Health facility data provide detailed clinical insights, while community data capture cases that may not reach healthcare settings, ensuring that the surveillance system accounts for all affected individuals. Integrating these data sources helps bridge gaps, improves resource allocation, and supports informed decision-making, ultimately leading to more effective NTD management and control strategies.
+![Overview EMTCT for Syphilis](resources/images/nat_sub_emtct_syphilis_1.png)
 
-The table below summarizes the key data point requirements coming from the WHO guidance and their correspondent variables in the [DHIS2 CHIS toolkit](https://docs.dhis2.org/en/implement/health/chis-community-health-information-system/overview.html).
+![ANC Syphilis testing coverage](resources/images/nat_sub_emtct_syphilis_2.png)
 
-| **NTD WHO Guidance**                                                                             | **CHIS DHIS2 Toolkit Correspondence**                                           |
-|--------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
-| Proportion of people presenting hematuria, either visible hematuria reported by the patient or micro-hematuria detected by a positive dipstick | CH147 - People with visible haematuria or +ve micro-haematuria dipstick (%)     |
-| Geographical coverage of mass drug administration                                                | CH139 - Communities receiving NTDs PC                                          |
-| Proportion of people receiving PC* for deworming                                                | CH060 - People receiving deworming preventive chemotherapy (%)                 |
-| Number of people referred to health facility for diagnosis or treatment                         | CH138 - People referred for NTDs                                               |
-| Population coverage of PC for targeted NTDs                                                     | CH140 - People receiving a dose of NTDs PC (%)                                 |
-| Proportion of households in the targeted communities that received social mobilization/awareness campaigns | CH141 - Households having received social mobilization campaigns on NTDs (%)   |
-|                                                                                                  | CH141b - Households receiving NTD messages - CM                                |
-|                                                                                                  | CH141c - Households receiving NTD messages - OneHealth                         |
-|                                                                                                  | CH141d - Households receiving NTD messages - PC                                |
-|                                                                                                  | CH141e - Households receiving NTD messages - VC                                |
-| Proportion of people screened for skin lesions consistent with NTDs (and population coverage)    | CH144 - People screened for skin NTDs (%)                                      |
-| Proportion of people suffering from physical disability related to NTDs who receive rehabilitation support | CH148 - People with NTD-linked disability receiving rehab support (%)          |
-| Proportion of cases who received instructions for self-care for relevant NTDs                   | CH149 - NTD cases having received self-care instructions (%)                   |
-| Proportion of people assessed for mental, neurological and substance use (MNS) disorders        | CH041 - People assessed for MNS disorders (%)                                  |
-| Proportion of people with mental, neurologic and substance use (MNS) referred                   | CH042 - People referred for MNS disorders (%)                                  |
-| Proportion of people with mental, neurologic and substance use (MNS) disorders receiving services | CH043 - People with MNS disorders receiving services (%)                       |
-| Proportion of households covered by IVM activities for NTDs                                      | CH150 - Houses with implemented vector reduction measure (%)                   |
-| Proportion of targeted houses covered by domiciliary vector reduction measures                  | CH150 - Houses with implemented vector reduction measure (%)                   |
-| Proportion of households with all water storage containers covered and protected (Safe water storage practices) | CH152 - Households with covered water containers (%)                           |
+![ANC Syphilis treatment coverage](resources/images/nat_sub_emtct_syphilis_3.png)
 
-### Data Triangulation - NTD Overarching Module and IDS
+![ANC Syphilis testing and treatment coverage over years](resources/images/nat_sub_emtct_syphilis_4.png)
 
-Triangulating data between the NTD overarching module and existing Integrated Disease Surveillance (IDS) modules within local health management information systems (HMIS) offers **flexibility for enhancing disease monitoring and response**. Depending on local program workflows and data flows, integrating and merging these datasets is possible. This integration can create a **single, comprehensive dataset that covers vaccine-preventable diseases (VPDs), other notifiable diseases, and locally relevant NTDs from the NTD toolkit**. However, if preferred locally, these modules **can also be maintained as separate entities**. This flexible approach allows health programs to decide the best configuration for their specific needs, ensuring that all critical information is captured and utilised effectively to strengthen overall health surveillance and response systems.
-The current IDS DHIS2 metadata toolkit already includes data elements for rabies and dengue. The mapping of data points from the NTD Neglected Tropical DIseases module and the existing IDSR modules is detailed in the table below, offering a clear guide for potential integration. This allows for a comprehensive approach to disease monitoring and response, facilitating the inclusion of NTD data into existing systems if needed and preferred locally, while also providing the flexibility to maintain them as separate modules.
-It should be noted that the IDS datasets are set with a weekly frequency, while the NTD module has a monthly reporting frequency.
+The global community has committed itself to the elimination of mother-to-child transmission (EMTCT) of HIV, syphilis and hepatitis B virus (HBV) as a public health priority. The Triple EMTCT initiative focuses on a harmonized approach to improving health outcomes for mothers and children. Box B summarizes the impact and process criteria for validation of EMTCT of syphilis. 
 
-| **NTD Data Points**                              | **IDS Data Points**                                                                                          | **IDS Datasets**                                      |
-|--------------------------------------------------|-------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
-| NTD-DEN - Dengue New confirmed cases             | Dengue Fever confirmed cases during the week                                                                | IDS - Integrated Lab Weekly Report                  |
-| NTD-RAB - Clinically diagnosed rabies cases      | Rabies confirmed cases during the week                                                                      | IDS - Integrated Lab Weekly Report                  |
-| NTD-RAB - Laboratory-confirmed rabies cases      | Rabies confirmed cases during the week                                                                      | IDS - Integrated Lab Weekly Report                  |
-| NTD-DEN - Dengue Suspected cases                 | Dengue Fever new suspected cases reported during the epi week (disaggregated by age groups 0-4 and 5+ years) | IDS - Report: Suspected, Confirm, Deaths            |
-|                                                  |                                                                                                             | IDS - Report: Suspected, Deaths                     |
-| NTD-DEN - Dengue New confirmed cases             | Dengue Fever confirmed cases during the week (disaggregated by age groups 0-4 and 5+ years)                 | IDS - Report: Suspected, Confirm, Deaths            |
-| NTD-DEN - Severe Dengue Deaths (primary cause)   | Dengue Fever deaths among suspected cases during the week (disaggregated by age groups 0-4 and 5+ years)     | IDS - Report: Suspected, Confirm, Deaths            |
-|                                                  |                                                                                                             | IDS - Report: Suspected, Deaths                     |
-| N/A                                              | Rabies new suspected cases reported during the epi week (disaggregated by age groups 0-4 and 5+ years)      | IDS - Report: Suspected, Confirm, Deaths            |
-|                                                  |                                                                                                             | IDS - Report: Suspected, Deaths                     |
-| NTD-RAB - Lab-confirmed human rabies cases       | Rabies confirmed cases during the week (disaggregated by age groups 0-4 and 5+ years)                       | IDS - Report: Suspected, Confirm, Deaths            |
-| NTD-RAB - Human rabies cases                     |                                                                                                             |                                                      |
-| NTD-RAB - Human dog-mediated rabies cases        |                                                                                                             |                                                      |
-| NTD-RAB - Human rabies deaths                    | Rabies deaths among suspected cases during the week (disaggregated by age groups 0-4 and 5+ years)          | IDS - Report: Suspected, Confirm, Deaths            |
-|                                                  |                                                                                                             | IDS - Report: Suspected, Deaths                     |
-| NTD-RAB - Human dog-mediated rabies deaths       |                                                                                                             |                                                      |
+This dashboard documents health facility activities related to the elimination of mother to child transmission of syphilis. WHO recommends that all pregnant women should be tested for syphilis at least once, and as early as possible, ideally at the first antenatal care visit. For women who test positive, the recommended treatment depends on the stage of infection (see Box A).
 
-### Data Triangulation - NTD HR and HFA
+There are four sets of figures:
 
-Integrating staff data and their NTD training into the **[Health Facility Attributes (HFA)](https://docs.dhis2.org/en/implement/health/health-facility-profile/design.html#introduction)** program under **Healthcare System Accessibility** significantly enhances data accuracy and utility. The HFA toolkit within DHIS2 is designed to streamline the collection of health facility attributes, providing comprehensive insights into service availability and infrastructure readiness. This toolkit supports routine health facility data collection, which can be integrated into the national Health Management Information System (HMIS), offering a holistic view of healthcare infrastructure and service readiness.
+- Syphilis test positivity in pregnant women: the bar chart shows the percentage of pregnant women who tested positive for syphilis (first test) and the percentage of ANC facilities reporting data on syphilis test positivity in pregnant women. The map presents test positivity (%) by region.
+- Syphilis testing coverage in pregnant women attending ANC: the bar chart shows the number of women who attended ANC at least once, the number of first syphilis tests conducted, and the estimated testing coverage (%). The map presents testing coverage (%) by region. 
+- Syphilis treatment coverage in pregnant women who test positive: the bar chart shows the number of women who tested positive for syphilis on their first test, the number of women who received at least one dose of BPG and the estimated testing coverage (%). The map presents treatment coverage (%) by region.
+- Testing and treatment coverage over time: these figures show for the last two years a month-by-month comparison of (a) testing coverage (%) and (b) treatment coverage (%)
 
-By incorporating NTD-trained staff information, the integration prevents double data entry and ensures that up-to-date data on personnel readiness is available. This enriched dataset is crucial for strategic planning, resource allocation, and effective responses to public health needs. The HFA toolkit's dynamic digital questionnaire format allows for flexible data collection, catering to specific needs and supporting a modular approach. This integration ultimately improves healthcare service delivery and emergency preparedness by providing a unified, data-driven foundation for health management.
+> **Summary of required impact and process targets for global validation of EMTCT of syphilis**
+> Impact target:
+> 
+> - a case rate of congenital syphilis of ≤50 per 100 000 live births
+>   
+> Process Targets:
+> 
+> - ≥95% ANC coverage (at least one visit) (ANC-1)
+> - ≥95% coverage of syphilis testing of pregnant women in ANC
+> - ≥95% adequate treatment of syphilis-seropositive pregnant women
+>
+>   The impact target is based on the surveillance case definition of congenital syphilis. WHO has developed two options depending on the clinical context: [1] a live birth or fetal death at >20 weeks of gestation or >500 g (including stillbirth) born to a woman with positive syphilis serology and without adequate syphilis treatment  OR [2] a live birth, stillbirth or child < 2 years of age born to a women with positive syphilis serology or with unknown serostatus and with laboratory and/or radiographic and/or clinical evidence of syphilis infection (regardless of the timing or adequacy of maternal treatment).
+>   
+>   A woman with a history of past syphilis diagnosis and for whom previous syphilis treatment can be confirmed should be evaluated for risk of reinfection but does not automatically require re-treatment. However, women living in high-prevalence settings (>1%) or whose own or partner’s behaviours places them at risk, or whose partners were not treated for syphilis, may warrant evaluation for reinfection later in pregnancy and in subsequent pregnancies
+>
+> Source: [Global guidance on criteria and processes for validation- elimination of mother-to-child transmission of HIV, syphilis and hepatitis B virus](https://www.who.int/publications/i/item/9789240039360)
 
-### Data exchange
+## Data Sets
 
-The principle of reusing data plays a key role in any successful implementation of digital tools. It is possible to link the NTD overarching module with existing disease-specific programs, should these be already implemented within the HMIS. DHIS2 supports internal and external aggregate Data Exchanges that can aggregate existing HMIS data and periodically push it to the corresponding variables in the overarching data set. For more information, please refer to [DHIS2 documentation](https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-master/data-exchange.html?h=data+exchange). A reference data exchange has been configured to enable data flow between Human Rabies Surveillance module and the NTD overarching data set. Information regarding this data exchange can be found in the design guide of the [Human Rabies Surveillance module](#ntd_hrs-design).
+As described above, dashboards are populated using the aggregate data model, using DHIS2 indicators. Aggregate dataset, data elements and category combinations have been configured to serve the analytics based on the dimensions of analysis included in the strategic information and data use guidelines.
 
+This dataset can be used for aggregated reporting among sites that do not yet have Tracker; or sites that submit routine reports that aggregate data from another individual level data collection tool.
+There is one dataset for capturing STI data. This has been designed based on the analytical needs represented in the WHO’s analysis framework
 
-#### NTD overarching module vs Disease-specific NTD Modules vs Tracker
+### STI
 
-The NTD overarching module provides a foundational set of variables that each country should report on. It covers the essential data points needed for tracking NTDs at a basic level and serves as the minimum requirement for standardized reporting. In contrast, the Disease-specific NTD modules focus on one disease at the time, presenting a more detailed and higher-volume dataset for reporting, suited to countries with specific disease surveillance needs. These modules are still aggregated but are designed with increased complexity to capture disease-specific data effectively.
-The disease-specific dataset also facilitate the data exchange with tracker data, ensuring that information entered into trackers, such as the sabies tracker, is aggregated and visualized accuretaly within the corresponding disease-specific dataset. Importantly, to streamline reporting and avoid redundancy, data entry should occur in either the tracker, the disease-specific module or the overarching module, not in multiple places. WHen data is intered into a tracker, it will automatically aggregate within ethe disease specific dataset as its core output for HMIS-integrated monitoring and nalaysis. The dataset has, in turn, been mapped to ensure alignment with the overarching outputs.
+This dataset contains the main source of information for the analysis of STI programs at Health Facility and national/subnational level:
 
-![The structure behind the data exchange within the NTD toolkits](resources/images/NTD_BURDEN_008.png)
+- STI - STI syndrome: Urethral discharge
+- STI - STI syndrome: Vaginal discharge
+- STI - STI syndrome: Genital ulcer disease
+- STI - Test conducted: Gonorrhoea
+- STI - Test conducted: Chlamydia
+- STI - Test conducted: Syphilis
+- STI - Positive test: Syphilis
+- STI - Positive test: Gonorrhoea
+- STI - Positive test: Chlamydia
+- STI - Confirmatory test conducted: Syphilis
+- STI - Confirmatory test positive: Syphilis
+- STI - Syphilis: Received at least one dose of BPG
+- STI - Syphilis: Received at least three doses of BPG
+- STI - Syphilis: congenitalç
 
-### NTD Zoonoses and Animal Health
+## Analytics
 
-Triangulating rabies surveillance with animal monitoring is a crucial strategy in understanding and controlling the spread of this virus. Given rabies' zoonotic nature and its potential for animal-to-human transmission, particularly in regions where the virus is endemic in wildlife, integrating human and animal surveillance efforts is essential. This approach enables the identification of potential animal reservoirs, the mapping of transmission pathways, and the prevention of new spillover events. By combining data from human case investigations, exposure assessments, and animal surveillance, public health authorities can achieve a comprehensive view of rabies transmission dynamics.
-The [DHIS2 Animal Health toolkit](https://docs.dhis2.org/en/implement/health/animal-health/event-based-surveillance/overview.html) is instrumental in facilitating this integration, offering a platform for systematic surveillance of animal populations, especially for zoonotic diseases like rabies. Developed in collaboration with organizations like the CDC and FAO, this toolkit can operate independently or be integrated with human health surveillance data to support a One Health approach. This cross-sectoral collaboration enables real-time reporting of unusual animal health events, triggering timely investigations. Using DHIS2 for both human and animal surveillance allows authorities to manage zoonotic risks effectively, ensuring the health of people, animals, and ecosystems is addressed holistically.
+As mentioned in the dashboard section, a group of visualizations use indicators calculating the reporting rate for specific elements:
+
+- STI - Health facility reporting STI syndrome data (%)
+- STI - Health facility reporting Gonorrhoea and/or Chlamydia data (%)
+- STI - Health facility reporting Syphilis data (%)
+- STI - Health facility reporting Syphilis data for pregnant women (%)
+
+Those indicators are composed by:
+
+- Numerator: Data element populated by a predictor assigning a value (1) if any data has been reported (including 0)
+- Denominator: all the Health facility
+
+>**Note:**
+>Only the Health Facility providing the service should be included in the denominator
+
+## User group
+
+## User group
+
+Three standard group are included in the downloadable .json
+
+| User group         | Metadata          | Data              |
+|--------------------|-------------------|-------------------|
+| STI - Admin        | Can edit and view | No access         |
+| STI - Access       | Can view only     | Can view only     |
+| STI - Data Capture | Can view only     | Can edit and view |
+

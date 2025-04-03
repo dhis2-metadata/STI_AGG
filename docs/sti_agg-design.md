@@ -155,7 +155,7 @@ The first bar chart records the number of individuals who tested positive for go
 
 #### STI diagnostic test confirmed cases of Syphilis
 
-![STI diagnostic test confirmed cases of Syphilis](resources/images/sti_diagnostic_test_confirmed_cases_syphilis.png)
+![STI diagnostic test confirmed cases of Syphilis](resources/images/nat_sub_sti_diagnostic_test_confirmed_cases_gonorrhoea_chlamydia.png)
 
 Diagnostic testing for syphilis is more widely available than for gonorrhoea and chlamydia, reflecting national and global recommendations for testing pregnant women and other populations for syphilis. The data for females are further broken down further into pregnant and non-pregnant females.
 

@@ -1,4 +1,4 @@
-# Neglected Tropical Diseases
+# Sexually Transmitted Infections (STI)
 
 ## Release Note
 
